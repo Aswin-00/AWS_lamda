@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  MyLambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: myLambdaFunction
+      PackageType: Image
+      Code:
+        # ImageUri: "<aws_account_id>.dkr.ecr.<region>.amazonaws.com/my-lambda-repo:latest"
+        ImageUri: "571600864581.dkr.ecr.ap-south-1.amazonaws.com/lambda:latest"
+      Role: "arn:aws:iam::571600864581:role/LambdaExecutionRole"
+
+Outputs:
+  LambdaFunctionName:
+    Description: "Deployed Lambda function name"
+    Value: !Ref MyLambdaFunction
+
+
+
