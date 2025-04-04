@@ -23,18 +23,22 @@ jobs:
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+      
+      
+      - name: Generate Version Tag
+        run: echo "VERSION_TAG=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
       - name: Build and Tag Docker Image
         run: |
           docker build -t lambda  app-py/.
-          docker tag lambda:latest 571600864581.dkr.ecr.ap-south-1.amazonaws.com/lambda:latest
+          docker tag lambda:latest 571600864581.dkr.ecr.ap-south-1.amazonaws.com/lambda:$VERSION_TAG
 
       - name: Push Docker Image to ECR
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/lambda:latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/lambda:$()
 
       - name: Update AWS Lambda Function
         run: |
           aws lambda update-function-code \
             --function-name myLambdaFunction \
-            --image-uri ${{ steps.login-ecr.outputs.registry }}/lambda:latest
+            --image-uri ${{ steps.login-ecr.outputs.registry }}/lambda:$VERSION_TAG
